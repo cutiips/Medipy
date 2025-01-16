@@ -1,0 +1,82 @@
+name,description,query,id,parentId,isFolder
+cypher_queries,,,0,,true
+get_all_entities.cypher,,"MATCH (e:Entity)
+RETURN e.id AS id, e.name AS name",1,0,false
+articles_with_hopes_sentences.cypher,,"MATCH (a:Article)-[r:HAS_SENTENCE]->(s:Sentence)
+WHERE a.title STARTS WITH ""Hopes""
+RETURN a, r, s
+LIMIT 20
+",2,0,false
+get_entity_details_from_mesh.cypher,,"MATCH (e:Entity)
+RETURN e.id AS id, e.name AS name",3,0,false
+get_entity_other_ids.cypher,,"MATCH (e:Entity) 
+WHERE e.name = ""Epidermolysis bullosa"" 
+WITH e,
+    [id in e.other_ids WHERE id contains ""mesh"" | split(id,"":"")[1]][0] as meshId
+CALL 
+apoc.load.json(""https://id.nlm.nih.gov/mesh/lookup/details?descriptor="" + meshId) YIELD value
+RETURN value",4,0,false
+entity_relations_with_sentences.cypher,,"MATCH (e:Entity) WHERE e.name = ""Epidermolysis bullosa""
+RETURN e.name as entity, e.other_ids as other_ids
+",5,0,false
+articles_sentences_limit_20.cypher,,"MATCH (e1:Entity)-[r1:REL]->(rel:Relation)-[r2:REL]->(e2:Entity)<-[m:MENTIONS]-(s:Sentence)
+RETURN e1, r1, rel, r2, e2, m, s
+LIMIT 20
+",6,0,false
+articles_sentences_entities.cypher,,"MATCH (a:Article)-[r:HAS_SENTENCE]->(s:Sentence)
+RETURN a, r, s
+LIMIT 20
+",7,0,false
+articles_sentences_entities_with_relations.cypher,,"MATCH (article:Article)-[rel1:HAS_SENTENCE]->(sentence:Sentence)-[rel2:MENTIONS]->(entity:Entity)
+RETURN article, rel1, sentence, rel2, entity
+SKIP 0 LIMIT 20",8,0,false
+detailed_articles_sentences_entities.cypher,,"MATCH (article:Article)-[:HAS_SENTENCE]->(sentence:Sentence)-[:MENTIONS]->(entity:Entity)
+RETURN article, sentence, entity
+LIMIT 50",9,0,false
+cypher_queries_extended_check,,,10,,true
+entities_with_snomedct_id.cypher,,"MATCH (e:Entity) 
+WHERE e.snomedct_id IS NOT NULL 
+RETURN e.name, e.snomedct_id
+",11,10,false
+entities_with_wikidata_id.cypher,,"MATCH (e:Entity) 
+WHERE e.wikidata_id IS NOT NULL 
+RETURN e.name, e.wikidata_id 
+",12,10,false
+mentions_in_tissue_engineering.cypher,,"MATCH (art:Article {title: ""Tissue Engineering and Regeneration of Skin and Hair Follicle Growth From Stem Cells""})-[:HAS_SENTENCE]->(s:Sentence)-[:MENTIONS]->(e:Entity)
+RETURN s.text, collect(e.name)
+",13,10,false
+mentions_in_hopes_and_limits.cypher,,"MATCH (art:Article {title: ""Hopes and Limits of Adipose-Derived Stem Cells (ADSCs) and Mesenchymal Stem Cells (MSCs) in Wound Healing""})-[:HAS_SENTENCE]->(s:Sentence)-[:MENTIONS]->(e:Entity)
+RETURN s.text, collect(e.name)
+",14,10,false
+sentence_count_tissue_engineering.cypher,,"MATCH (art:Article {title: ""Tissue Engineering and Regeneration of Skin and Hair Follicle Growth From Stem Cells""})-[:HAS_SENTENCE]->(s:Sentence)
+RETURN count(s)
+",15,10,false
+sentence_count_hopes_and_limits.cypher,,"MATCH (art:Article {title: ""Hopes and Limits of Adipose-Derived Stem Cells (ADSCs) and Mesenchymal Stem Cells (MSCs) in Wound Healing""})-[:HAS_SENTENCE]->(s:Sentence)
+RETURN count(s)
+",16,10,false
+authors_of_tissue_engineering.cypher,,"MATCH (a:Author)-[:WROTE]->(art:Article {title: ""Tissue Engineering and Regeneration of Skin and Hair Follicle Growth From Stem Cells""})
+RETURN a.name, art.title
+",17,10,false
+authors_of_hopes_and_limits.cypher,,"MATCH (a:Author)-[:WROTE]->(art:Article {title: ""Hopes and Limits of Adipose-Derived Stem Cells (ADSCs) and Mesenchymal Stem Cells (MSCs) in Wound Healing""})
+RETURN a.name, art.title
+",18,10,false
+duplicate_sentences_by_hash.cypher,,"MATCH (s:Sentence)
+WITH s.text_sha256 AS hashValue, COUNT(*) AS c
+WHERE c > 1
+RETURN hashValue, c
+",19,10,false
+relation_types_count.cypher,,"MATCH ()-[r]->() RETURN type(r), count(r)",20,10,false
+node_labels_count.cypher,,"MATCH (n) RETURN labels(n), count(n)",21,10,false
+entity_relations.cypher,,"MATCH (e1:Entity)-[:REL]->(r:Relation)-[:REL]->(e2:Entity)
+RETURN e1.name AS source, r.type AS relationType, e2.name AS target;",22,10,false
+sentences_with_mentioned_entities.cypher,,"MATCH (s:Sentence)-[:MENTIONS]->(e:Entity)
+RETURN s.id AS sentence_id, s.text AS sentence_text, collect(e.name) AS mentioned_entities;",23,10,false
+articles_with_sentences.cypher,,"MATCH (ar:Article)-[:HAS_SENTENCE]->(s:Sentence)
+RETURN ar.title AS article, s.id AS sentence_id, s.text AS sentence_text;",24,10,false
+entities_with_ids.cypher,,"MATCH (e:Entity)
+RETURN e.name AS entity, e.wikidata_id, e.snomedct_id
+LIMIT 5
+",25,10,false
+authors_and_articles.cypher,,"MATCH (au:Author)-[:WROTE]->(ar:Article)
+RETURN au.name AS author, ar.title AS article
+",26,10,false
