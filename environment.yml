@@ -1,0 +1,20 @@
+name: MedipyTest2
+channels:
+  - conda-forge
+  - anaconda
+  - defaults
+dependencies:
+  # Conda
+  - python=3.7
+  - tesseract
+  - poppler
+  - nltk
+  - pandas
+  - jupyter
+  - jupyterlab
+  - nbconvert
+
+  # pip
+  - pip
+  - pip:
+      - -r requirements.txt
