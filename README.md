@@ -67,7 +67,7 @@ conserver une traçabilité claire des informations extraites et de valider leur
 
 ## 🐍 Environnement virtuel
 - Télécharger et installer [Anaconda](https://www.anaconda.com/products/distribution).
-- Créer un environnement virtuel avec Python 3.7 : `conda create --name Medipy python=3.7`.
+- Créer l'environnement virtuel : `conda env create --file environment.yml --name Medipy python=3.7`
 - Activer l'environnement virtuel : `conda activate Medipy`.
 - Se rendre dans le répertoire du projet : `cd path/to/semesterproject`.
 - Pour lancer Jupyter Notebook : `jupyter notebook`.
@@ -76,7 +76,8 @@ conserver une traçabilité claire des informations extraites et de valider leur
 ### PyCharm
 - Ouvrir PyCharm et sélectionner l'environnement virtuel `Medipy` : ![PyCharm](/setup/pycharm.png)
 
-## 💊 Dépendances
+## 💊 problèmes dépendances - manuellement :
+- Créer un environnement virtuel avec Python 3.7 : `conda create --name Medipy python=3.7` (sans le .yml)
 - Installer les dépendances `conda-forge` : `conda install -c conda-forge tesseract poppler`
 - Installer les dépendances `anaconda` : `conda install -c anaconda nltk pandas`.
 - You can find all the anaconda dependencies in the `anaconda.txt` file.
